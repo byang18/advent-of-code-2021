@@ -1,4 +1,4 @@
-from common import parse, CustomException
+from common import parse, driver, CustomException
 
 def _convert_bin_to_dec(n):
     i = 0
@@ -80,16 +80,13 @@ def puzzle2(data):
         raise CustomException("CO universe has more than 1 value")
  
     return o_dec * co_dec
-
+    
 ####
 
-
-FILENAME = "test.txt"
+FILENAME = "day3.txt"
 
 if __name__ == "__main__":
     data = parse(FILENAME)
-    res = puzzle1(data)
-    print(f"puzzle1: {res}")
-
-    res = puzzle2(data)
-    print(f"puzzle2: {res}")
+    driver(puzzle1, data=data, n=1)
+    driver(puzzle2, data=data, n=2)
+    
