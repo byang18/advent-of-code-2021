@@ -22,5 +22,5 @@ def parse(file_name, data_type='STRING'):
 def driver(fn, **kwargs):
     time = datetime.now()
     res = fn(kwargs["data"])
-    num = kwargs["n"]
+    num = kwargs["p"]
     print(f"puzzle{num}: {res}, runtime: {datetime.now() - time}")

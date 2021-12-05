@@ -87,6 +87,6 @@ FILENAME = "day3.txt"
 
 if __name__ == "__main__":
     data = parse(FILENAME)
-    driver(puzzle1, data=data, n=1)
-    driver(puzzle2, data=data, n=2)
+    driver(puzzle1, data=data, p=1)
+    driver(puzzle2, data=data, p=2)
     
