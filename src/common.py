@@ -22,29 +22,25 @@ def parse(file_name, data_type='STRING'):
 def build_matrix(data):
     mat = []
     for line in data:
-        row = [9]
+        row = []
         for char in line:
             row.append(int(char))
-        row.append(9)
         mat.append(row)
-    mat.insert(0, [9] * len(mat[0]))
-    mat.append([9] * len(mat[0]))
     return mat
 
 def out_of_mat_bounds(coor, mat):
     i = coor[0]
     j = coor[1]
-    if (i == 0 or i == len(mat) - 1 or j == 0 or j == len(mat[0]) - 1):
+    if (i < 0 or i > len(mat) - 1 or j < 0 or j > len(mat[0]) - 1):
         return True
     return False
 
 def print_matrix(mat):
     for i in range(len(mat)):
         for j in range(len(mat[0])):
-            if out_of_mat_bounds((i,j), mat):
-                continue
             print(f"{mat[i][j]} ", end='')
         print()
+    print()
 
 def driver(fn, **kwargs):
     time = datetime.now()

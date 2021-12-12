@@ -65,7 +65,7 @@ def puzzle2(data):
     i = 1
     while(True):
         flashed = step(mat)
-        if len(flashed) == (len(mat) - 2) * (len(mat[0]) - 2):
+        if len(flashed) == len(mat) * len(mat[0]):
             return i
         i += 1
 
