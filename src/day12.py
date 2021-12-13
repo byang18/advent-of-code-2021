@@ -16,12 +16,13 @@ def build_graph(data):
         graph[n2_name].add(n1_name)
     return graph
 
-def times_visited(node, curr_path):
-    count = 0
-    for n in curr_path:
-        if n == node:
-            count += 1
-    return count
+def cant_double(curr_path):
+    visited = set()
+    for node in curr_path:
+        if not node.isupper() and node in visited:
+            return True
+        visited.add(node)
+    return False
             
 def backtrack(curr_node, target, curr_path, paths, graph):
     if curr_node == target:
@@ -30,19 +31,22 @@ def backtrack(curr_node, target, curr_path, paths, graph):
         return
     for node in graph[curr_node]:
         if node in curr_path and not node.isupper():
-            continue
+            if node == "start" or node == "end":
+                continue
+            if cant_double(curr_path):
+                continue
         curr_path.append(node)
         backtrack(node, target, curr_path, paths, graph)
         curr_path.pop()
 
-def puzzle1(data):
+def puzzle2(data):
     graph = build_graph(data)
     paths = []
     backtrack("start", "end", ["start"], paths, graph)
     return len(paths)
 
-FILENAME = "test.txt"
+FILENAME = "day12.txt"
 
 if __name__ == "__main__":
     data = parse(FILENAME)
-    driver(puzzle1, data=data, p=1)
+    driver(puzzle2, data=data, p=2)
