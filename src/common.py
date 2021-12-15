@@ -35,6 +35,13 @@ def out_of_mat_bounds(coor, mat):
         return True
     return False
 
+def get_all_coors(mat):
+    coors = set()
+    for i in range(len(mat)):
+        for j in range(len(mat[0])):
+            coors.add((i, j))
+    return coors
+
 def print_matrix(mat):
     for i in range(len(mat)):
         for j in range(len(mat[0])):
