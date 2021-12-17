@@ -1,4 +1,5 @@
 from common import parse, driver
+from math import prod
 
 HEX_TO_BIN = {
     '0': "0000",
@@ -19,45 +20,65 @@ HEX_TO_BIN = {
     'F': "1111"
 }
 
+LIT_DICT = {} # maps id to value
+OP_DICT = {} # maps (id, version) to children of ids
+
 def get_version_and_type(s):
     return int(s[0:3], 2), int(s[3:6], 2)
 
 def find_literal(s):
-    v, t = get_version_and_type(s)
     l = ""
     start = 6
     while (start+5 <= len(s)):
-        l += s[start:start+5]
+        l += s[start:start+5][1:]
         if (s[start:start+5][0] == '0'):
             break
         start += 5
     return int(l, 2), s[start+5:]
 
-def find_packets(s, res):
+def process_nums(t, arr):
+    if t == 0:
+        return sum(arr)
+    if t == 1:
+        return prod(arr)
+    if t == 2:
+        return min(arr)
+    if t == 3:
+        return max(arr)
+    if t == 5:
+        return 1 if arr[0] > arr[1] else 0
+    if t == 6:
+        return 1 if arr[0] < arr[1] else 0
+    if t == 7:
+        return 1 if arr[0] == arr[1] else 0
+
+def find_packets(s, count, isCount):
     if len(s) < 6 or int(s) == 0:
-        return
+        return []
+    if isCount[0] and count > isCount[1]:
+        return []
     v, t = get_version_and_type(s)
+    res = []
     if t == 4:
         l, leftover = find_literal(s)
-        find_packets(leftover, res)
-    else: 
+        res.append(l)
+        res.extend(find_packets(leftover, count+1, isCount))
+        return res
+    else:
         if s[6] == '0': # next 15 bits are subpackets len
             length = int(s[7:22], 2)
-            find_packets(s[22:], res)
-            # find_packets(s[22+length+1:], res)
+            res.extend(find_packets(s[22:22+length], count+1, isCount))
+            res.extend(find_packets(s[22+length:], count+1, isCount))
         elif s[6] == '1': # next 11 bits are subpackets num
             num_packets = int(s[7:18], 2)
-            find_packets(s[18:], res)
-    res.append((v, t, s))
+            res.extend(find_packets(s[18:], 0, (True, num_packets)))
+        return [process_nums(t, res)]
 
-def puzzle1(data):
+def puzzle2(data):
     data_bin = ''.join([HEX_TO_BIN[char] for char in data])
-    res = []
-    find_packets(data_bin, res)
-    for id, t, data in res:
-        print(f"id: {id}; type: {t}; data: {data}")
-    return sum([id for id, _, _ in res])
+    res = find_packets(data_bin, 0, (False, -1))
+    return res[0]
 
 FILENAME = "test.txt"
 data = parse(FILENAME)[0]
-driver(puzzle1, data=data, p=1)
+driver(puzzle2, data=data, p=1)
